@@ -13,18 +13,22 @@ console.log('Yargs', argv);
 
 if (command === 'add'){
     var note = notes.addNote(argv.title, argv.body);
-    if(_.isUndefined(note)){
-        console.log('Added fail, the title may duplicate.');
-    }else{
+    if(!_.isUndefined(note)){
         console.log('Note added.');
-        console.log('--');
-        console.log("Title: ", note.title);
-        console.log(`Body: ${note.body}`);
+        notes.logNote(note);
+    }else{
+        console.log('Added fail, the title may duplicate.');
     }
 }else if (command === 'list'){
     notes.getAll();
 }else if (command === 'read'){
-    notes.readNote(argv.title);
+    var note = notes.readNote(argv.title);
+    if (note){
+        console.log('Note found.');
+        notes.logNote(note);
+    }else{
+        console.log('Note not found.');
+    }
 }else if (command === 'remove'){
     var noteRemoved = notes.removeNote(argv.title);
     var message = noteRemoved ? 'Note was removed.' : 'Note not found';
