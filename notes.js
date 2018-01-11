@@ -13,14 +13,14 @@ var saveNotes = (notes) => {
     fs.writeFileSync('notes-data.json', JSON.stringify(notes));
 }
 
-var addNote = (title, body) => {
+var addNote = (name, job) => {
     var notes = fetchNotes();
     var note = {
-        title,
-        body
+        name,
+        job
     };
 
-    var duplicateNotes = notes.filter((note) => note.title === title);
+    var duplicateNotes = notes.filter((note) => note.name === name);
     if (duplicateNotes.length === 0){
         notes.push(note);
         saveNotes(notes);
@@ -32,24 +32,37 @@ var getAll = () => {
     return fetchNotes();
 };
 
-var readNote = (title) => {
+var readNote = (name) => {
     var notes = fetchNotes();
-    var note = notes.filter((n) => n.title === title)[0];
+    var note = notes.filter((n) => n.name === name)[0];
     return note;
 };
 
-var removeNote = (title) => {
+var removeNote = (name) => {
     var notes = fetchNotes();
-    var filteredNotes = notes.filter((note) => note.title !== title);
+    var filteredNotes = notes.filter((note) => note.name !== name);
     saveNotes(filteredNotes);
 
     return notes.length !== filteredNotes.length;
 };
 
+var updateNote = (name, job) => {
+    var notes = fetchNotes();
+
+    if (notes.filter(n => n.name === name)[0]){
+        notes.filter(n => n.name === name)[0].job = job;
+        saveNotes(notes);
+        return readNote(name);
+    }else{
+        return false;
+    }
+    
+}
+
 var logNote = (note) => {
     console.log('---');
-    console.log("Title: ", note.title);
-    console.log(`Body: ${note.body}`);
+    console.log("Name: ", note.name);
+    console.log(`Job: ${note.job}`);
 }
 
 module.exports = {
@@ -57,5 +70,6 @@ module.exports = {
     getAll,
     readNote,
     removeNote,
+    updateNote,
     logNote
 };
